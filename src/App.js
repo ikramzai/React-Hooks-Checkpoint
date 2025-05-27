@@ -1,51 +1,40 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Filter from './components/Filter';
 import MovieList from './components/MovieList';
+import MovieDescription from './MovieDescription';
 import './App.css';
 
 function App() {
   const [movies, setMovies] = useState([
     {
+      id: 1,
       title: 'Inception',
-      description: 'A thief who steals corporate secrets through the use of dream-sharing technology.',
-      posterURL: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH',
+      description: 'A thief who steals corporate secrets through dream-sharing technology.',
+      posterURL: 'https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg',
       rating: 5,
+      trailerLink: 'https://www.youtube.com/embed/YoHD9XEInc0',
     },
     {
+      id: 2,
       title: 'The Matrix',
-      description: 'A computer hacker learns about the true nature of reality and his role in the war against its controllers.',
-      posterURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCWXVvfvZR3oe7PCMM0exwV0dObOTKvLfSM-bjvKpQ1VegKXuCtq6aBrxqbIgUNxMbfavy',
+      description: 'A hacker discovers the true nature of reality and his role in the war.',
+      posterURL: 'https://upload.wikimedia.org/wikipedia/en/9/94/The_Matrix.jpg',
       rating: 4,
+      trailerLink: 'https://www.youtube.com/embed/vKQi3bBA1y8',
     },
     {
+      id: 3,
       title: 'Interstellar',
-      description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.',
-      posterURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngBJ0B7UDrLUkDlp6DCQLsEYuWR-DiHwbnxFFCniB3HiP3f3NZmR1-lKSC34ge6YXu4LX',
+      description: 'Explorers travel through a wormhole in space to ensure humanity’s survival.',
+      posterURL: 'https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg',
       rating: 5,
+      trailerLink: 'https://www.youtube.com/embed/zSWdZVtXT7E',
     },
   ]);
 
   const [filterTitle, setFilterTitle] = useState('');
   const [filterRating, setFilterRating] = useState(0);
-
-  const [newTitle, setNewTitle] = useState('');
-  const [newDescription, setNewDescription] = useState('');
-  const [newPosterURL, setNewPosterURL] = useState('');
-  const [newRating, setNewRating] = useState(1);
-
-  const handleAddMovie = () => {
-    const newMovie = {
-      title: newTitle,
-      description: newDescription,
-      posterURL: newPosterURL,
-      rating: newRating,
-    };
-    setMovies([...movies, newMovie]);
-    setNewTitle('');
-    setNewDescription('');
-    setNewPosterURL('');
-    setNewRating(1);
-  };
 
   const filteredMovies = movies.filter(movie =>
     movie.title.toLowerCase().includes(filterTitle.toLowerCase()) &&
@@ -53,50 +42,23 @@ function App() {
   );
 
   return (
-    <div className="app-container">
-      <h1>My Movie App</h1>
-
-      <div className="filter-container">
-        <Filter
-          filterTitle={filterTitle}
-          setFilterTitle={setFilterTitle}
-          filterRating={filterRating}
-          setFilterRating={setFilterRating}
-        />
-      </div>
-
-      <div className="add-movie-container">
-        <h2>Add a new movie</h2>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newTitle}
-          onChange={e => setNewTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="Description"
-          value={newDescription}
-          onChange={e => setNewDescription(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Poster URL"
-          value={newPosterURL}
-          onChange={e => setNewPosterURL(e.target.value)}
-        />
-        <select
-          value={newRating}
-          onChange={e => setNewRating(Number(e.target.value))}
-        >
-          {[1, 2, 3, 4, 5].map(r => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
-        <button onClick={handleAddMovie}>Add Movie</button>
-      </div>
-
-      <MovieList movies={filteredMovies} />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="app-container">
+            <h1>My Movie App</h1>
+            <Filter
+              filterTitle={filterTitle}
+              setFilterTitle={setFilterTitle}
+              filterRating={filterRating}
+              setFilterRating={setFilterRating}
+            />
+            <MovieList movies={filteredMovies} />
+          </div>
+        } />
+        <Route path="/movie/:id" element={<MovieDescription movies={movies} />} />
+      </Routes>
+    </Router>
   );
 }
 
